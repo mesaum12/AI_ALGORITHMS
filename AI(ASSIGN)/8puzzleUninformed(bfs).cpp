@@ -1,10 +1,9 @@
-// Program to print path from root node to destination node
-// for N puzzle algorithm (using BFS )
+// solving the 8 puzzle problems using uninformed search strategy
+// used breadth first search technique
 #include <bits/stdc++.h>
 using namespace std;
 #define N 3
-int final[N][N];
-set<Node *> visited;
+set<vector<vector<int>>> visitedSet;
 // state space tree nodes
 struct Node
 {
@@ -15,19 +14,32 @@ struct Node
     // stores blank tile coordinates
     int x, y;
 
-    // stores the number of moves so far
     int level;
 };
-// Function to print N x N matrix
+
+bool isGoalNode(int curr[N][N], int final[N][N])
+{
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            if (curr[i][j] != final[i][j])
+                return false;
+        }
+    }
+    return true;
+}
+// Function to print the configuration of a state
 int printMatrix(int mat[N][N])
 {
     for (int i = 0; i < N; i++)
     {
         for (int j = 0; j < N; j++)
-            cout << mat[i][j] << "\n";
+            cout << mat[i][j] << " ";
         cout << "\n";
     }
 }
+
 // bottom, left, top, right
 int row[] = {1, 0, -1, 0};
 int col[] = {0, -1, 0, 1};
@@ -60,83 +72,97 @@ Node *newNode(int mat[N][N], int x, int y, int newX,
 // Function to check if (x, y) is a valid matrix coordinate
 int isSafe(int x, int y)
 {
-
     return (x >= 0 && x < N && y >= 0 && y < N);
 }
+
 // print path from root node to destination node
+int steps = 0;
 void printPath(Node *root)
 {
     if (root == NULL)
         return;
+    steps++;
     printPath(root->parent);
     printMatrix(root->mat);
 
     printf("\n");
 }
 
-bool isGoalNode(int mat[][N])
-{
-    for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < N; j++)
-            if (mat[i][j] != final[i][j])
-                return false;
-    }
-    return true;
-}
-// solve function to solve the problem
 void solve(int initial[N][N], int x, int y,
            int final[N][N])
 {
 
-    queue<Node *> pq;
+    // create a root node and calculate its cost
     Node *root = newNode(initial, x, y, x, y, 0, NULL);
+    vector<vector<int>> current(N, vector<int>(N));
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            current[i][j] = root->mat[i][j];
+
+    queue<Node *> pq;
     pq.push(root);
-    visited.insert(root);
+    visitedSet.insert(current);
 
     while (!pq.empty())
     {
-
-        Node *currentState = pq.front();
+        // find a successor of the current node
+        Node *min = pq.front();
         pq.pop();
-        // if currentState is an answer node
-        if (isGoalNode(currentState->mat))
+        // if goal node is found
+        if (isGoalNode(min->mat, final))
         {
             // print the path from root to destination;
-            printPath(currentState);
+            printPath(min);
             return;
         }
 
+        // do for each child of min
+        // max 4 children for a node
+
         for (int i = 0; i < 4; i++)
         {
-            Node *child = newNode(currentState->mat, currentState->x,
-                                  currentState->y, currentState->x + row[i],
-                                  currentState->y + col[i],
-                                  currentState->level + 1, currentState);
-            if (visited.find(child) == visited.end() && isSafe(currentState->x + row[i], currentState->y + col[i]))
+            if (isSafe(min->x + row[i], min->y + col[i]))
             {
-                visited.insert(child);
+                // create a child node and calculate
+                // its cost
+
+                Node *child = newNode(min->mat, min->x,
+                                      min->y, min->x + row[i],
+                                      min->y + col[i],
+                                      min->level + 1, min);
+
+                for (int i = 0; i < N; i++)
+                    for (int j = 0; j < N; j++)
+                        current[i][j] = child->mat[i][j];
+
+                // if the visited node is found , then simply continue
+                if (visitedSet.find(current) != visitedSet.end())
+                    continue;
                 pq.push(child);
+                visitedSet.insert(current);
             }
         }
     }
 }
+
 // Driver code
 int main()
 {
+
     int initial[N][N];
     int x, y;
-    cout << "Enter the initial configuration of the 3 puzzle \n";
+
+    cout << "Enter the initial configuration \n";
     for (int i = 0; i < N; i++)
     {
         for (int j = 0; j < N; j++)
         {
             cin >> initial[i][j];
             if (initial[i][j] == 0)
-                x = i, y = j; // store the blank space
+                x = i, y = j;
         }
     }
-
+    int final[N][N];
     cout << "Enter the final configuration \n";
     for (int i = 0; i < N; i++)
     {
@@ -145,6 +171,9 @@ int main()
             cin >> final[i][j];
         }
     }
+    cout << "\n";
+
     solve(initial, x, y, final);
+    cout << "The miminum number of moves for the algorithm is :" << steps << "\n";
     return 0;
 }

@@ -191,36 +191,3 @@ void initConfiguration()
     solve(initial, x, y, final);
     cout << "The miminum number of moves for the algorithm is :" << steps << "\n";
 }
-
-// // Driver code
-// int main()
-// {
-
-// 	int initial[N][N];
-// 	int x, y;
-
-// 	cout << "Enter the initial configuration \n";
-// 	for (int i = 0; i < N; i++)
-// 	{
-// 		for (int j = 0; j < N; j++)
-// 		{
-// 			cin >> initial[i][j];
-// 			if (initial[i][j] == 0)
-// 				x = i, y = j;
-// 		}
-// 	}
-// 	int final[N][N];
-// 	cout << "Enter the final configuration \n";
-// 	for (int i = 0; i < N; i++)
-// 	{
-// 		for (int j = 0; j < N; j++)
-// 		{
-// 			cin >> final[i][j];
-// 		}
-// 	}
-// 	cout << "\n";
-
-// 	solve(initial, x, y, final);
-// 	cout << "The miminum number of moves for the algorithm is :" << steps << "\n";
-// 	return 0;
-// }

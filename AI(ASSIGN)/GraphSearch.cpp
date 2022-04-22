@@ -90,6 +90,28 @@ public:
       path.pop_back();
       visited[node] = false;
    }
+   map<int, int> mp;
+   void dfs(int node, int targetNode, vector<bool> &visited, vector<int> &path, vector<vector<int>> &all_paths, int i)
+   {
+      visited[node] = true;
+      path.push_back(node);
+      order.push_back(node);
+      if (node == targetNode)
+      {
+         orderListCurrent.push_back(order);
+         all_paths.push_back(path);
+      }
+      for (int curr_node : adjList[node])
+      {
+         if (mp[node] < i && visited[curr_node] == false)
+         {
+            mp[node]++;
+            dfs(curr_node, targetNode, visited, path, all_paths);
+         }
+      }
+      path.pop_back();
+      visited[node] = false;
+   }
    void dls(int node, int targetNode, vector<bool> &visited, vector<int> &path, vector<vector<int>> &all_paths, int depthLimit)
    {
       if (depthLimit <= 0)
@@ -99,7 +121,7 @@ public:
       order.push_back(node);
       if (node == targetNode)
       {
-         orderListCurrent.push_back(order);
+         printOrder(order);
          all_paths.push_back(path);
       }
       for (int curr_node : adjList[node])
@@ -132,6 +154,7 @@ public:
       set<vector<int>> paths;
       vector<int> path;
       path.push_back(source);
+      order.push_back(source);
       q.push(path);
 
       while (!q.empty())
@@ -143,6 +166,7 @@ public:
          if (last_node == targetNode)
          {
             //  printPath(path);
+            printOrder(order);
             paths.insert(path);
          }
 
@@ -152,6 +176,7 @@ public:
             {
                vector<int> newPath(path);
                newPath.push_back(node);
+               order.push_back(node);
                q.push(newPath);
             }
          }
@@ -173,6 +198,7 @@ public:
       set<vector<int>> paths;
       vector<int> path;
       path.push_back(source);
+      order.push_back(source);
       q.push(path);
 
       while (!q.empty())
@@ -184,6 +210,7 @@ public:
          if (last_node == targetNode)
          {
             //  printPath(path);
+            printOrder(order);
             paths.insert(path);
          }
 
@@ -195,6 +222,7 @@ public:
                counter++;
                if (pathNotVisited(node, path))
                {
+                  order.push_back(node);
                   vector<int> newPath(path);
                   newPath.push_back(node);
                   q.push(newPath);
@@ -220,24 +248,34 @@ public:
    void bestFirstSearch(int source, int targetNode)
    {
 
-      cout << "Hello\n";
       vector<bool> visited(nvertices + 1, false);
       priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
       pq.push({0, source});
       visited[source] = true;
       cout << "Source:" << source << "\n";
+      vector<int> parent(100000, -1);
       while (!pq.empty())
       {
-         cout << "hello\n";
+
          auto current = pq.top();
-         cout << current.second << " ";
          pq.pop();
 
          int node = current.second;
          int weight = current.first;
 
          if (node == targetNode)
+         {
+            int current = targetNode;
+            cout << "Path:";
+            while (current != -1)
+            {
+               cout << "HI";
+               cout << current << " ";
+               current = parent[current];
+            }
             return;
+         }
+
          for (pair<int, int> curr : adjList2[node])
          {
             int current_weight = curr.second;
@@ -245,6 +283,7 @@ public:
             if (!visited[current_node])
             {
                pq.push({current_weight, current_node});
+               parent[current_node] = node;
                visited[current_node] = true;
             }
          }
@@ -285,14 +324,48 @@ public:
       orderListCurrent.clear();
       order.clear();
    }
+   void depth_first_search(Graph &g, int source, int targetNode, int i)
+   {
+      vector<vector<int>> all_paths;
+      vector<int> path;
+      vector<bool> visited(g.number_of_vertices() + 1, false);
+      // call the dfs to search for all the possible paths from source to targetNode
+
+      g.dfs(source, targetNode, visited, path, all_paths, i);
+
+      // printing all the paths
+      int count = 0;
+      for (auto path : all_paths)
+      {
+         cout << "PATH " << ++count << ":";
+         for (int node : path)
+            cout << node << " ";
+         cout << "\n";
+      }
+      count = 0;
+      for (auto order : orderListCurrent)
+      {
+         cout << "ORDER" << ++count << ":";
+         for (int node : order)
+            cout << node << " ";
+         cout << "\n";
+      }
+      cout << "\n";
+      orderListCurrent.clear();
+      order.clear();
+   }
    void bestFirstSearch(Graph &g, int source, int targetNode)
    {
       // we need to perform bfs but use a priority queue instead of queue to reach the target node
       g.bestFirstSearch(source, targetNode);
+      orderListCurrent.clear();
+      order.clear();
    }
    void breadth_first_search(Graph &g, int source, int targetNode)
    {
       g.bfs(source, targetNode);
+      orderListCurrent.clear();
+      order.clear();
    }
 
    void depth_limited_search(Graph &g, int source, int targetNode, int depthLimit)
@@ -310,6 +383,15 @@ public:
             cout << node << " ";
          cout << "\n";
       }
+      count = 0;
+      for (auto order : orderListCurrent)
+      {
+         cout << "ORDER " << ++count << ":";
+         for (int node : order)
+            cout << node << " ";
+         cout << "\n";
+      }
+
       cout << "\n";
    }
 
@@ -342,14 +424,10 @@ public:
       cout << "\n";
    }
 
-   void iterative_broadening_search(Graph &g, int source, int targetNode, int number_of_iterations)
+   void iterative_broadening_search(Graph &g, int source, int targetNode, int branch)
    {
-      for (int i = 0; i < number_of_iterations; i++)
-      {
-         int result = g.bfs(source, targetNode, i);
-         if (result)
-            break;
-      }
+
+      depth_first_search(g, source, targetNode, branch);
    }
 };
 Graph InputGraphDetailsWeighted()
@@ -397,18 +475,23 @@ Graph InputGraphDetailsUnweighted()
 void printGraph(Graph g)
 {
 
-   for (int i = 0; i < g.adjList2.size(); i++)
+   vector<vector<pair<int, int>>> adjList = g.adjList2;
+   for (int i = 1; i < adjList.size(); i++)
    {
-      cout << i + 1 << " ";
-      for (auto node : g.adjList2[i])
-         cout << node.first << " " << node.second << "\n";
+      cout << i << " ";
+      for (auto node : adjList[i])
+      {
+         cout << "{" << node.first << "," << node.second << "}"
+              << " ";
+      }
+      cout << "\n";
    }
 }
 
 int main()
 {
 
-   cout << "--------------------+++++GRAPH SEARCH ALGORITHMS++++------------------------- \n";
+   cout << "--------------------+++++---GRAPH SEARCH ALGORITHMS---++++------------------------- \n";
    Graph g, g2;
    Operations op;
    // int nvertices, nedges, src, targetNode, depthLimit, number_of_iterations;
@@ -431,7 +514,6 @@ int main()
       cout << "6.Best first search\n";
       cout << "7.Exit\n";
       cout << "8.Eight puzzle\n";
-      cout << "9.Genetic Algorithm \n";
       cout << "Enter your choice:";
 
       int choice, weighted;
@@ -513,6 +595,7 @@ int main()
             cout << "Need weighted graph, Renter the graph with weights to perform this algorithm:\n";
             g = InputGraphDetailsWeighted();
          }
+
          // printGraph(g);
          op.bestFirstSearch(g, src, targetNode);
          cout << "\n";

@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
-
 #include "Tour.hpp"
 #include "TourManager.hpp"
+
 using namespace std;
 double fRand(double fMin, double fMax)
 {
@@ -21,17 +21,48 @@ double acceptanceProbability(int energy, int newEnergy, double temperature)
 int main(int argc, char *argv[])
 {
     TourManager tourManager;
-    int number_of_cities;
-    cout << "The cities must be entered in the format of coordinates in 2-d plane\n";
-    cout << "Enter the number of cities:";
-    cin >> number_of_cities;
-    for (int i = 0; i < number_of_cities; i++)
-    {
-        int X, Y;
-        cin >> X >> Y;
-        City city = City(X, Y);
-        tourManager.addCity(city);
-    }
+
+    // Create and add our cities
+    City city = City(60, 200);
+    tourManager.addCity(city);
+    City city2 = City(180, 200);
+    tourManager.addCity(city2);
+    City city3 = City(80, 180);
+    tourManager.addCity(city3);
+    City city4 = City(140, 180);
+    tourManager.addCity(city4);
+    City city5 = City(20, 160);
+    tourManager.addCity(city5);
+    City city6 = City(100, 160);
+    tourManager.addCity(city6);
+    City city7 = City(200, 160);
+    tourManager.addCity(city7);
+    City city8 = City(140, 140);
+    tourManager.addCity(city8);
+    City city9 = City(40, 120);
+    tourManager.addCity(city9);
+    City city10 = City(100, 120);
+    tourManager.addCity(city10);
+    City city11 = City(180, 100);
+    tourManager.addCity(city11);
+    City city12 = City(60, 80);
+    tourManager.addCity(city12);
+    City city13 = City(120, 80);
+    tourManager.addCity(city13);
+    City city14 = City(180, 60);
+    tourManager.addCity(city14);
+    City city15 = City(20, 40);
+    tourManager.addCity(city15);
+    City city16 = City(100, 40);
+    tourManager.addCity(city16);
+    City city17 = City(200, 40);
+    tourManager.addCity(city17);
+    City city18 = City(20, 20);
+    tourManager.addCity(city18);
+    City city19 = City(60, 20);
+    tourManager.addCity(city19);
+    City city20 = City(160, 20);
+    tourManager.addCity(city20);
 
     double temp = 10000;
 
