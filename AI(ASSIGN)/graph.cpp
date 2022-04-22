@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "8puzzle.h"
+
 using namespace std;
 vector<vector<int>> orderListCurrent;
 vector<int> order;
@@ -412,28 +413,7 @@ int main()
    Operations op;
    // int nvertices, nedges, src, targetNode, depthLimit, number_of_iterations;
    int depthLimit, number_of_iterations;
-
-   // take the input of the graph details
-   // cout << "Enter the number of vertices in the graph:";
-   // cin >> nvertices;
-   // cout << "Enter the number of edges in the graph:";
-   // cin >> nedges;
-
-   // int weighted;
-   // cout << "Is the graph weighted or unweighted ?, enter 1 for weighted , otherwise 0:";
-   // cin >> weighted;
-
-   // if (weighted == 1)
-   //    g.initialise(nvertices, nedges, true);
-
-   // else
-   //    g.initialise(nvertices, nedges);
-
-   // cout << "Source Node:";
-   // cin >> src;
-   // cout << "Target Node:";
-   // cin >> targetNode;
-
+   string str;
    int newGraph = 0;
    bool flag = true;
    // now the graph initialization has been done , we now need to choose the algorithm
@@ -451,6 +431,7 @@ int main()
       cout << "6.Best first search\n";
       cout << "7.Exit\n";
       cout << "8.Eight puzzle\n";
+      cout << "9.Genetic Algorithm \n";
       cout << "Enter your choice:";
 
       int choice, weighted;
